@@ -133,5 +133,5 @@ dmypy.json
 .pyre/
 
 # secret config files
-.json
-.ini
+*.json
+*.ini
