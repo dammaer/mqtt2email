@@ -1,5 +1,6 @@
 import socket
 import time
+import os
 import urllib.parse
 import urllib.request
 import logging
@@ -13,9 +14,9 @@ from email_send import email_send, EmailSendIsFail
 from configparser import ConfigParser
 
 config = ConfigParser()
-config.read('settings.ini')
+config.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
 
-CONFIG_NAME = 'config.json'
+CONFIG_NAME = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
 
 BROKER = config.get('broker', 'BROKER')
 BROKER_LOGIN = config.get('broker', 'BROKER_LOGIN')
@@ -126,7 +127,10 @@ def check_send_time_and_status(datetime_expression, email_sent) -> bool:
         if (email_sent == 0 and curr_dt.hour >= spec_dt.hour
                 and curr_dt.minute >= spec_dt.minute):
             return True
-        elif email_sent == 1:
+        elif (email_sent == 1 and spec_dt.hour > curr_dt.hour
+                and spec_dt.minute > curr_dt.minute):
+            return False
+        else:
             return None
     return False
 
@@ -143,7 +147,8 @@ def main():
     logger = setup_logging()
     for index, company in enumerate(config['company']):
         for date, state in company['date'].items():
-            if check_send_time_and_status(date, state) is True:
+            check = check_send_time_and_status(date, state)
+            if check is True:
                 nodes = [node for node in config['node']
                          if node['company'] == company['name']]
                 serial_energy_list = list_of_topics(
@@ -172,7 +177,7 @@ def main():
                            f" {company['name']}")
                     logger.info(msg)
                     pass
-            elif check_send_time_and_status(date, state) is False:
+            elif check is False:
                 config['company'][index]['date'][date] = 0
     save_config(config)
 

@@ -1,11 +1,12 @@
 import smtplib
 import socket
+import os
 from email.headerregistry import Address
 from email.message import EmailMessage
 from configparser import ConfigParser
 
 config = ConfigParser()
-config.read('settings.ini')
+config.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
 
 SMTP_SERVER = config.get('email', 'SMTP_SERVER')
 SMTP_PORT = config.get('email', 'SMTP_PORT')
@@ -83,6 +84,8 @@ def email_send(msg_to, data):
 
 
 if __name__ == "__main__":
-    data = ({'address': 'test', 'model': 1234, 'serial': 12345, 'energy': '1001'},
-            {'address': 'test2', 'model': 4321, 'serial': 12345, 'energy': '2002'})
+    data = ({'address': 'test', 'model': 1234,
+             'serial': 12345, 'energy': '1001'},
+            {'address': 'test2', 'model': 4321,
+             'serial': 12345, 'energy': '2002'})
     email_send('login@domain.com', data)
