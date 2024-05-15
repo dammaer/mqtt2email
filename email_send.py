@@ -71,6 +71,7 @@ def create_html_msg(data):
 
 
 def email_send(msg_to, data):
+    data.sort(key=lambda k: k['address'])
     msg = EmailMessage()
     msg['Subject'] = 'Показания счётчиков ООО "LanTa"'
     msg['From'] = Address(EMAIL_DISP_NAME, EMAIL_USERNAME, EMAIL_DOMAIN)
