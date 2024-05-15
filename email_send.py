@@ -16,6 +16,9 @@ SMTP_PASSWD = config.get('email', 'SMTP_PASSWD')
 EMAIL_DISP_NAME = config.get('email', 'EMAIL_DISP_NAME')
 EMAIL_USERNAME = config.get('email', 'EMAIL_USERNAME')
 EMAIL_DOMAIN = config.get('email', 'EMAIL_DOMAIN')
+EMAIL_COPY = [Address(addr_spec=addr)
+              for addr in config.get(
+                  'email', 'EMAIL_COPY', fallback='').split()]
 
 
 class EmailSendIsFail(Exception):
@@ -72,6 +75,7 @@ def email_send(msg_to, data):
     msg['Subject'] = 'Показания счётчиков ООО "LanTa"'
     msg['From'] = Address(EMAIL_DISP_NAME, EMAIL_USERNAME, EMAIL_DOMAIN)
     msg['To'] = (Address(addr_spec=msg_to),)
+    msg['Bcc'] = EMAIL_COPY
     msg.set_content(create_text_msg(data))
     msg.add_alternative(create_html_msg(data), subtype='html')
     try:
@@ -88,4 +92,4 @@ if __name__ == "__main__":
              'serial': 12345, 'energy': '1001'},
             {'address': 'test2', 'model': 4321,
              'serial': 12345, 'energy': '2002'})
-    email_send('login@domain.com', data)
+    # email_send('login@domain.com', data)
