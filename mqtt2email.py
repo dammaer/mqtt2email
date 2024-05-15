@@ -130,8 +130,7 @@ def check_send_time_and_status(datetime_expression, email_sent) -> bool:
         elif (email_sent == 1 and spec_dt.hour > curr_dt.hour
                 and spec_dt.minute > curr_dt.minute):
             return False
-        else:
-            return None
+        return None
     return False
 
 
