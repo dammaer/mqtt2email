@@ -5,19 +5,19 @@ from email.headerregistry import Address
 from email.message import EmailMessage
 from configparser import ConfigParser
 
-config = ConfigParser()
-config.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
+ini = ConfigParser()
+ini.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
 
-SMTP_SERVER = config.get('email', 'SMTP_SERVER')
-SMTP_PORT = config.get('email', 'SMTP_PORT')
-SMTP_LOGIN = config.get('email', 'SMTP_LOGIN')
-SMTP_PASSWD = config.get('email', 'SMTP_PASSWD')
+SMTP_SERVER = ini.get('email', 'SMTP_SERVER')
+SMTP_PORT = ini.get('email', 'SMTP_PORT')
+SMTP_LOGIN = ini.get('email', 'SMTP_LOGIN')
+SMTP_PASSWD = ini.get('email', 'SMTP_PASSWD')
 
-EMAIL_DISP_NAME = config.get('email', 'EMAIL_DISP_NAME')
-EMAIL_USERNAME = config.get('email', 'EMAIL_USERNAME')
-EMAIL_DOMAIN = config.get('email', 'EMAIL_DOMAIN')
+EMAIL_DISP_NAME = ini.get('email', 'EMAIL_DISP_NAME')
+EMAIL_USERNAME = ini.get('email', 'EMAIL_USERNAME')
+EMAIL_DOMAIN = ini.get('email', 'EMAIL_DOMAIN')
 EMAIL_COPY = [Address(addr_spec=addr)
-              for addr in config.get(
+              for addr in ini.get(
                   'email', 'EMAIL_COPY', fallback='').split()]
 
 

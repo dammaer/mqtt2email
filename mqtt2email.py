@@ -13,17 +13,17 @@ import paho.mqtt.client as mqtt
 from email_send import email_send, EmailSendIsFail
 from configparser import ConfigParser
 
-config = ConfigParser()
-config.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
+ini = ConfigParser()
+ini.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
 
 CONFIG_NAME = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
 
-BROKER = config.get('broker', 'BROKER')
-BROKER_LOGIN = config.get('broker', 'BROKER_LOGIN')
-BROKER_PASSWD = config.get('broker', 'BROKER_PASSWD')
+BROKER = ini.get('broker', 'BROKER')
+BROKER_LOGIN = ini.get('broker', 'BROKER_LOGIN')
+BROKER_PASSWD = ini.get('broker', 'BROKER_PASSWD')
 
-TG_CHAT_IDS = config.get('telegram', 'TG_CHAT_IDS').split()
-TG_TOKEN = config.get('telegram', 'TG_TOKEN')
+TG_CHAT_IDS = ini.get('telegram', 'TG_CHAT_IDS').split()
+TG_TOKEN = ini.get('telegram', 'TG_TOKEN')
 
 
 class BrokerIsFail(Exception):
