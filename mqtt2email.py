@@ -45,7 +45,7 @@ def save_config(config):
                   indent=4, separators=(',', ': '))
 
 
-def setup_logging(log_file='error.log'):
+def setup_logging(log_file='log'):
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s',
                                   datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -53,11 +53,14 @@ def setup_logging(log_file='error.log'):
     logger.setLevel(logging.DEBUG)
 
     file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.CRITICAL)
     file_handler.setLevel(logging.ERROR)
     file_handler.setLevel(logging.WARNING)
+    file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
 
     console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.CRITICAL)
     console_handler.setLevel(logging.ERROR)
     console_handler.setLevel(logging.WARNING)
     console_handler.setLevel(logging.INFO)
@@ -162,20 +165,20 @@ def main():
                               for device in item['device']]
                     email_send(company['email'], result)
                     config['company'][index]['date'][date] = 1
+                    logger.info('Данные успешно отправлены '
+                                f"{company['name']}")
                 except (BrokerIsFail, EmailSendIsFail) as e:
                     tg_send(e)
-                    logger.error(e)
+                    logger.critical(e)
                     return
                 except KeyError as e:
                     msg = f'Нет данных от топика указанного в конфиге: {e}'
                     tg_send(msg)
-                    logger.warning(msg)
-                    pass
+                    logger.error(msg)
                 except EmptyTopicList:
                     msg = ("Нет связанных узлов в конфиге для"
                            f" {company['name']}")
-                    logger.info(msg)
-                    pass
+                    logger.warning(msg)
             elif check is False:
                 config['company'][index]['date'][date] = 0
     save_config(config)
