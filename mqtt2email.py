@@ -165,7 +165,7 @@ def main():
                               for device in item['device']]
                     email_send(company['email'], result)
                     config['company'][index]['date'][date] = 1
-                    logger.info('Данные успешно отправлены '
+                    logger.info('Показания успешно отправлены '
                                 f"{company['name']}")
                 except (BrokerIsFail, EmailSendIsFail) as e:
                     tg_send(e)
