@@ -1,22 +1,29 @@
+import logging
+import os
 import socket
 import time
-import os
 import urllib.parse
 import urllib.request
-import logging
+from configparser import ConfigParser
 from datetime import datetime
 from json import dump as json_dump
 from json import load as json_load
 
 import paho.mqtt.client as mqtt
 
-from email_send import email_send, EmailSendIsFail
-from configparser import ConfigParser
+from email_send import EmailSendIsFail, email_send
+
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+
+def file_path(filename):
+    return os.path.join(BASE_PATH, filename)
+
 
 ini = ConfigParser()
-ini.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
+ini.read(file_path('settings.ini'))
 
-CONFIG_NAME = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+CONFIG_NAME = file_path('config.json')
 
 BROKER = ini.get('broker', 'BROKER')
 BROKER_LOGIN = ini.get('broker', 'BROKER_LOGIN')
@@ -45,7 +52,7 @@ def save_config(config):
                   indent=4, separators=(',', ': '))
 
 
-def setup_logging(log_file='log'):
+def setup_logging(log_file=file_path('log')):
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s',
                                   datefmt='%Y-%m-%d %H:%M:%S')
 

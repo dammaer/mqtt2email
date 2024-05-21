@@ -6,7 +6,7 @@ from email.message import EmailMessage
 from configparser import ConfigParser
 
 ini = ConfigParser()
-ini.read(os.path.dirname(os.path.realpath(__file__)) + '/settings.ini')
+ini.read(os.path.dirname(os.path.abspath(__file__)) + '/settings.ini')
 
 SMTP_SERVER = ini.get('email', 'SMTP_SERVER')
 SMTP_PORT = ini.get('email', 'SMTP_PORT')
