@@ -153,7 +153,6 @@ def main():
     for index, company in enumerate(config['company']):
         for date, state in company['date'].items():
             check = check_send_time_and_status(date, state)
-            print(date, state, check)
             if check is True:
                 nodes = [node for node in config['node']
                          if node['company'] == company['name']]
