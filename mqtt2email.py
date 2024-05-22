@@ -148,7 +148,7 @@ def list_of_topics(nodes, topic) -> list:
 
 
 def main():
-    config = load_config()
+    config, changed = load_config(), False
     logger = setup_logging()
     for index, company in enumerate(config['company']):
         for date, state in company['date'].items():
@@ -168,6 +168,7 @@ def main():
                               for device in item['device']]
                     email_send(company['email'], result)
                     config['company'][index]['date'][date] = 1
+                    changed = True
                     logger.info('Показания успешно отправлены '
                                 f"{company['name']}")
                 except (BrokerIsFail, EmailSendIsFail) as e:
@@ -184,7 +185,8 @@ def main():
                     logger.warning(msg)
             elif check is False:
                 config['company'][index]['date'][date] = 0
-    save_config(config)
+                changed = True
+    save_config(config) if changed else None
 
 
 if __name__ == "__main__":
