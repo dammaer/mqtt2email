@@ -23,7 +23,7 @@ def file_path(filename):
 ini = ConfigParser()
 ini.read(file_path('settings.ini'))
 
-CONFIG_NAME = file_path('config.json')
+CONFIG = file_path('config.json')
 
 BROKER = ini.get('broker', 'BROKER')
 BROKER_LOGIN = ini.get('broker', 'BROKER_LOGIN')
@@ -42,12 +42,12 @@ class EmptyTopicList(Exception):
 
 
 def load_config():
-    with open(CONFIG_NAME, 'r') as f:
+    with open(CONFIG, 'r') as f:
         return json_load(f)
 
 
 def save_config(config):
-    with open(CONFIG_NAME, 'w', encoding="utf-8") as f:
+    with open(CONFIG, 'w', encoding="utf-8") as f:
         json_dump(config, f, ensure_ascii=False,
                   indent=4, separators=(',', ': '))
 
@@ -133,15 +133,11 @@ def check_send_time_and_status(datetime_expression, email_sent) -> bool:
         second=0,
         microsecond=0
     )
-    if curr_dt.day == spec_dt.day and curr_dt.month == spec_dt.month:
-        if (email_sent == 0 and curr_dt.hour >= spec_dt.hour
-                and curr_dt.minute >= spec_dt.minute):
-            return True
-        elif (email_sent == 1 and spec_dt.hour > curr_dt.hour
-                and spec_dt.minute > curr_dt.minute):
-            return False
-        return None
-    return False
+    if email_sent == 0 and curr_dt >= spec_dt:
+        return True
+    elif email_sent == 1 and spec_dt > curr_dt:
+        return False
+    return None
 
 
 def list_of_topics(nodes, topic) -> list:
@@ -157,6 +153,7 @@ def main():
     for index, company in enumerate(config['company']):
         for date, state in company['date'].items():
             check = check_send_time_and_status(date, state)
+            print(date, state, check)
             if check is True:
                 nodes = [node for node in config['node']
                          if node['company'] == company['name']]
