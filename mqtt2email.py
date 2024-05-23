@@ -60,6 +60,7 @@ def setup_logging(log_file=file_path('log')):
     logger.setLevel(logging.DEBUG)
 
     file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
 
     console_handler = logging.StreamHandler()
@@ -177,7 +178,8 @@ def main():
             elif check is False:
                 config['company'][index]['date'][date] = 0
                 changed = True
-    save_config(config) if changed else None
+    save_config(config) if changed else logger.debug(
+        'Состояния отправки email остались неизменными')
 
 
 if __name__ == "__main__":
