@@ -60,22 +60,13 @@ def setup_logging(log_file=file_path('log')):
     logger.setLevel(logging.DEBUG)
 
     file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.CRITICAL)
-    file_handler.setLevel(logging.ERROR)
-    file_handler.setLevel(logging.WARNING)
-    file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
 
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.CRITICAL)
-    console_handler.setLevel(logging.ERROR)
-    console_handler.setLevel(logging.WARNING)
-    console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(formatter)
 
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
-
     return logger
 
 
