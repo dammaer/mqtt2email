@@ -14,6 +14,7 @@ SMTP_LOGIN = ini.get('email', 'SMTP_LOGIN')
 SMTP_PASSWD = ini.get('email', 'SMTP_PASSWD')
 
 EMAIL_DISP_NAME = ini.get('email', 'EMAIL_DISP_NAME')
+EMAIL_SUBJECT = ini.get('email', 'EMAIL_SUBJECT')
 EMAIL_USERNAME = ini.get('email', 'EMAIL_USERNAME')
 EMAIL_DOMAIN = ini.get('email', 'EMAIL_DOMAIN')
 EMAIL_COPY = [Address(addr_spec=addr)
@@ -26,7 +27,7 @@ class EmailSendIsFail(Exception):
 
 
 def create_text_msg(data):
-    text = '| Адрес | Модель | Серийный номер | Показания |\n'
+    text = '|| АДРЕС || МОДЕЛЬ || СЕРИЙНЫЙ НОМЕР || ПОКАЗАНИЯ ||\n'
     for d in data:
         text += (f"| {d['address']} | {d['model']} | "
                  f"{d['serial']} | {d['energy']} |\n")
@@ -73,7 +74,7 @@ def create_html_msg(data):
 def email_send(msg_to, data):
     data.sort(key=lambda k: k['address'])
     msg = EmailMessage()
-    msg['Subject'] = 'Показания счётчиков ООО "LanTa"'
+    msg['Subject'] = EMAIL_SUBJECT
     msg['From'] = Address(EMAIL_DISP_NAME, EMAIL_USERNAME, EMAIL_DOMAIN)
     msg['To'] = (Address(addr_spec=msg_to),)
     msg['Bcc'] = EMAIL_COPY
