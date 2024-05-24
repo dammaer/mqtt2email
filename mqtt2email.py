@@ -73,7 +73,7 @@ def setup_logging(log_file=file_path('log')):
 
 def tg_send(msg):
     tg_msg = ('Скрипт отправки показаний счётчиков.\n\U000026A0 '
-              f'Есть проблема: {msg}')
+              f'Есть проблема! {msg}')
     for chat_id in TG_CHAT_IDS:
         params = {
             'chat_id': chat_id,
