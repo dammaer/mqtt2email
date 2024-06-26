@@ -41,6 +41,10 @@ class EmptyTopicList(Exception):
     pass
 
 
+class ValueIsNull(Exception):
+    pass
+
+
 def load_config():
     with open(CONFIG, 'r') as f:
         return json_load(f)
@@ -138,6 +142,10 @@ def list_of_topics(nodes, topic) -> list:
             for device in item['device']
             ]
 
+def check_null(value, topic):
+    if float(value) == 0:
+        raise ValueIsNull(topic)
+    return value, topic
 
 def main():
     config, changed = load_config(), False
@@ -154,8 +162,12 @@ def main():
                     broker_data = get_broker_data(serial_energy_list)
                     result = [{'address': item['address'],
                                'model': device['model'],
-                               'serial': broker_data[device['serial']],
-                               'energy': broker_data[device['energy']]}
+                               'serial': check_null(
+                                   broker_data[device['serial']],
+                                   device['serial'])[0],
+                               'energy': check_null(
+                                   broker_data[device['energy']],
+                                   device['energy'])[0]}
                               for item in nodes
                               for device in item['device']]
                     email_send(company['email'], result)
@@ -169,6 +181,10 @@ def main():
                     return
                 except KeyError as e:
                     msg = f'Нет данных от топика указанного в конфиге: {e}'
+                    tg_send(msg)
+                    logger.error(msg)
+                except ValueIsNull as e:
+                    msg = f'Значения топика равны нулю: {e}'
                     tg_send(msg)
                     logger.error(msg)
                 except EmptyTopicList:
